@@ -5,7 +5,7 @@ A collection of composable skills for coding agents, focused on structured workf
 ## Installation
 
 ```bash
-npx skills add https://github.com/obsfx/skills --skill obsfx-skills
+npx skills add https://github.com/obsfx/skills --skill software-architect
 ```
 
 or
