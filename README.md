@@ -6,6 +6,7 @@ A collection of composable skills for coding agents, focused on structured workf
 
 ```bash
 npx skills add https://github.com/obsfx/skills --skill software-architect
+npx skills add https://github.com/obsfx/skills --skill assisted-learning
 ```
 
 or
@@ -24,27 +25,9 @@ Start a new session and ask for something that should trigger a skill (for examp
 
 - **software-architect** — Structured design workflow with two modes: Design (new features, structural changes) and Review (analyze existing codebase for pain points). Enforces multi-solution analysis from a tech lead perspective, composable module design, and architecture-first planning. Generates incremental plan files in `docs/<plan-name>/`. Only proposes changes that genuinely matter.
 
-## Plan File Structure
+### Learning & Knowledge
 
-The software-architect skill generates incremental, architecture-first plan documents:
-
-```
-docs/<plan-name>/
-  00-overview.md               # Goal, decisions, technology choices with pitfalls
-  01-module-architecture.md    # Module map, interfaces, directory structure
-  02-data-and-state.md         # Data model, state ownership, data flow
-  03-integration-points.md     # External deps, platform constraints, wiring
-  04-edge-cases-and-resilience.md  # Failure scenarios, resource management
-  05-implementation-sequence.md    # Phased build order, incremental milestones
-```
-
-## Philosophy
-
-- **Architecture before code** — Design the structure, then implement
-- **Evidence over opinion** — Research current state of tools and APIs, don't rely on trained knowledge alone
-- **Worth-it gate** — Only propose changes that are genuinely causing problems
-- **Composable design** — Separation of concerns, DRY, modules connected through interfaces
-- **Simplicity != laziness** — The simplest robust solution wins, but ignoring error handling is not simple
+- **assisted-learning** — Assisted learning skill for JavaScript developers exploring new technologies. Teaches new programming languages (Elixir, Swift, Go, Rust), tools (Kubernetes, Docker, Terraform), and architectural approaches (microservices, CQRS, distributed systems) through side-by-side JS comparisons, mermaid diagrams, and real-world examples. Uses trekker as a persistent learning database across sessions. Always researches via context7 and web search before teaching. Recommends industry-standard approaches from a tech lead perspective.
 
 ## License
 
