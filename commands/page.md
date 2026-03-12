@@ -6,7 +6,7 @@ allowed-tools: ["Read", "Write", "Glob", "Bash"]
 
 # Generate Learning Page
 
-Create a clean, printable static HTML page that explains and demonstrates a concept from the current assisted-learning conversation. Uses mermaid for flowcharts/sequences and tldraw for rich visual diagrams.
+Create a clean, printable static HTML page that explains and demonstrates a concept from the current assisted-learning conversation. Uses mermaid for flowcharts/sequences and inline SVG for rich visual diagrams. The output is a single standalone HTML file with no external dependencies beyond the mermaid CDN.
 
 ## Process
 
@@ -16,19 +16,13 @@ Create a clean, printable static HTML page that explains and demonstrates a conc
 
 3. Create the `docs/pages/` directory in the **user's project root** (the current working directory) if it doesn't exist. Write the HTML file to `docs/pages/<topic-slug>.html` in the project root. NEVER write to the plugin installation directory.
 
-4. If the page uses tldraw diagrams, copy the viewer bundle from the plugin to the project:
-   ```bash
-   cp "$CLAUDE_PLUGIN_ROOT/scripts/tldraw-viewer.js" docs/pages/tldraw-viewer.js
-   ```
-   Skip this step if `docs/pages/tldraw-viewer.js` already exists.
-
-5. Report the file path when done.
+4. Report the file path when done.
 
 ## Section Order
 
 1. **Title + subtitle** — topic name and one-line description
 2. **Overview** — 2-3 paragraph explanation of the core concept
-3. **Diagrams** — at least one diagram (mermaid or tldraw) showing architecture, flow, or relationships
+3. **Diagrams** — at least one diagram (mermaid or SVG) showing architecture, flow, or relationships
 4. **Key concepts** — table or definition list of important terms
 5. **Side-by-side comparison** — JS approach vs target approach (use `.comparison` grid). Skip if not applicable.
 6. **Callouts** — gotchas or insights (use `.callout` blocks)
@@ -38,13 +32,13 @@ Adapt sections to fit the topic. Add multiple diagrams if needed. Diagrams can a
 
 ## Choosing Diagram Type
 
-| Use Mermaid | Use tldraw |
-|-------------|------------|
+| Use Mermaid | Use Inline SVG |
+|-------------|----------------|
 | Flowcharts, decision trees | Architecture overviews with spatial layout |
-| Sequence diagrams | Concept maps with freeform connections |
-| State machines | Layered diagrams (network stack, middleware pipeline) |
-| Class/ER diagrams | Visual guides showing spatial relationships |
-| Simple linear flows | Diagrams needing custom positioning and sizing |
+| Sequence diagrams | Layered diagrams (network stack, middleware pipeline) |
+| State machines | Component relationship diagrams with custom positioning |
+| Class/ER diagrams | Visual guides, concept maps |
+| Simple linear flows | Anything needing precise control over layout and sizing |
 
 Use both in the same page when appropriate.
 
@@ -52,116 +46,103 @@ Use both in the same page when appropriate.
 
 Wrap in `<div class="mermaid">...</div>`. One diagram per concept.
 
-## tldraw Diagrams
+## SVG Diagrams
 
-tldraw renders interactive readonly canvases from JSON snapshots via a pre-bundled viewer (`tldraw-viewer.js`). Use for diagrams where spatial layout, custom sizing, and freeform connections matter.
+Use inline `<svg>` elements for rich visual diagrams. SVG is zero-dependency, prints perfectly, and gives full control over layout.
 
-### Container
+### SVG Primitives
 
-```html
-<div class="tldraw-diagram" id="unique-diagram-name"></div>
-```
-
-### Initialization
-
-The viewer exposes `TldrawViewer.render(containerId, snapshot)`. Call it after the DOM is ready:
+Use these building blocks:
 
 ```html
-<script src="./tldraw-viewer.js"></script>
-<script>
-    TldrawViewer.render('architecture-overview', {
-        store: {
-            // shape definitions
-        }
-    });
-</script>
+<!-- Box with label -->
+<rect x="50" y="50" width="160" height="60" rx="4" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
+<text x="130" y="85" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#1a1a1a">Component</text>
+
+<!-- Rounded box with fill -->
+<rect x="50" y="50" width="160" height="60" rx="4" fill="#f5f5f5" stroke="#1a1a1a" stroke-width="1.5"/>
+
+<!-- Circle/ellipse -->
+<ellipse cx="130" cy="80" rx="80" ry="35" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
+
+<!-- Diamond -->
+<polygon points="130,30 210,80 130,130 50,80" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
+
+<!-- Arrow (line with marker) -->
+<line x1="210" y1="80" x2="300" y2="80" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Arrow label -->
+<text x="255" y="72" text-anchor="middle" font-size="12" fill="#666">HTTP</text>
 ```
 
-### Snapshot Format
+### Arrow Marker Definition
 
-Each snapshot has a `store` object containing shape records.
+Include this `<defs>` block once per SVG:
 
-**Shape types:**
-- `geo` — rectangles, ellipses, diamonds. Set shape via `props.geo`.
-- `arrow` — connections between shapes with optional labels.
-- `text` — standalone text labels.
-- `note` — note-style boxes with text.
-
-**Common shape props:**
-- `x`, `y` — canvas position
-- `props.w`, `props.h` — dimensions (for geo shapes)
-- `props.text` — label content
-- `props.color` — `"black"`, `"grey"`, `"light-blue"` etc.
-- `props.fill` — `"none"`, `"semi"`, `"solid"`
-- `props.size` — `"s"`, `"m"`, `"l"`
-- `props.font` — `"draw"`, `"sans"`, `"serif"`, `"mono"`
-
-**Arrow bindings:**
-- Bound to shape: `{ type: "binding", boundShapeId: "shape:targetId", normalizedAnchor: { x: 0.5, y: 0.5 }, isExact: false }`
-- Free point: `{ type: "point", x: 100, y: 200 }`
-
-### Example snapshot
-
-```javascript
-TldrawViewer.render('data-flow', {
-    store: {
-        'shape:client': {
-            typeName: 'shape', id: 'shape:client', type: 'geo',
-            x: 50, y: 80,
-            props: { geo: 'rectangle', w: 160, h: 70, text: 'Client', color: 'black', fill: 'none', size: 'm', font: 'sans' }
-        },
-        'shape:server': {
-            typeName: 'shape', id: 'shape:server', type: 'geo',
-            x: 350, y: 80,
-            props: { geo: 'rectangle', w: 160, h: 70, text: 'Server', color: 'black', fill: 'semi', size: 'm', font: 'sans' }
-        },
-        'shape:db': {
-            typeName: 'shape', id: 'shape:db', type: 'geo',
-            x: 350, y: 250,
-            props: { geo: 'ellipse', w: 160, h: 70, text: 'Database', color: 'grey', fill: 'semi', size: 'm', font: 'sans' }
-        },
-        'shape:arrow1': {
-            typeName: 'shape', id: 'shape:arrow1', type: 'arrow',
-            x: 0, y: 0,
-            props: {
-                start: { type: 'binding', boundShapeId: 'shape:client', normalizedAnchor: { x: 0.5, y: 0.5 }, isExact: false },
-                end: { type: 'binding', boundShapeId: 'shape:server', normalizedAnchor: { x: 0.5, y: 0.5 }, isExact: false },
-                text: 'HTTP', color: 'black', size: 'm', arrowheadEnd: 'arrow', arrowheadStart: 'none'
-            }
-        },
-        'shape:arrow2': {
-            typeName: 'shape', id: 'shape:arrow2', type: 'arrow',
-            x: 0, y: 0,
-            props: {
-                start: { type: 'binding', boundShapeId: 'shape:server', normalizedAnchor: { x: 0.5, y: 0.5 }, isExact: false },
-                end: { type: 'binding', boundShapeId: 'shape:db', normalizedAnchor: { x: 0.5, y: 0.5 }, isExact: false },
-                text: 'Query', color: 'grey', size: 'm', arrowheadEnd: 'arrow', arrowheadStart: 'none'
-            }
-        }
-    }
-});
+```html
+<defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1a1a"/>
+    </marker>
+    <marker id="arrow-grey" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+</defs>
 ```
 
-### tldraw style constraints
+### Example: Architecture Diagram
 
-Keep tldraw diagrams consistent with the page's minimal aesthetic:
-- Colors: only `"black"` and `"grey"`
-- Fill: `"none"` or `"semi"` — avoid bright solid fills
-- Text size: `"s"` or `"m"`
-- Font: `"sans"` for clean look, `"draw"` for hand-drawn feel
-- Shapes: prefer `"rectangle"`, `"ellipse"`, `"diamond"` — avoid decorative shapes
+```html
+<svg class="diagram" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1a1a"/>
+        </marker>
+    </defs>
+
+    <!-- Client -->
+    <rect x="30" y="40" width="140" height="55" rx="4" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
+    <text x="100" y="73" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" fill="#1a1a1a">Client</text>
+
+    <!-- Server -->
+    <rect x="250" y="40" width="140" height="55" rx="4" fill="#f5f5f5" stroke="#1a1a1a" stroke-width="1.5"/>
+    <text x="320" y="73" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" fill="#1a1a1a">Server</text>
+
+    <!-- Database -->
+    <ellipse cx="320" cy="220" rx="70" ry="30" fill="#f5f5f5" stroke="#1a1a1a" stroke-width="1.5"/>
+    <text x="320" y="225" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" fill="#1a1a1a">Database</text>
+
+    <!-- Arrows -->
+    <line x1="170" y1="67" x2="245" y2="67" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="207" y="60" text-anchor="middle" font-size="12" fill="#666">HTTP</text>
+
+    <line x1="320" y1="95" x2="320" y2="185" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="335" y="145" font-size="12" fill="#666">Query</text>
+</svg>
+```
+
+### SVG Style Rules
+
+- Colors: only `#1a1a1a` (strokes, primary text), `#f5f5f5` (fills), `#666` (labels), `#e0e0e0` (secondary strokes)
+- `stroke-width="1.5"` for all shapes
+- `rx="4"` for rounded rectangles
+- `fill="none"` for outline-only boxes, `fill="#f5f5f5"` for filled boxes
+- Font: `-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
+- Font size: `14` for labels inside shapes, `12` for arrow labels, `11` for secondary text
+- Always set `viewBox` on the SVG element — never use fixed `width`/`height` so it scales responsively
+- Keep diagrams simple and focused. One concept per diagram.
 
 ## Design Rules (non-negotiable)
 
 - No gradients, no shadows, no decorative elements, no background images
-- No rounded corners beyond 4px (tldraw canvas internals are exempt)
-- Three colors max for page chrome: near-black (`#1a1a1a`), white (`#ffffff`), light gray (`#f5f5f5`). Secondary text: `#666`. Borders: `#e0e0e0`.
-- System fonts only for page content. tldraw uses its own internal fonts within canvases.
+- No rounded corners beyond 4px
+- Three colors max: near-black (`#1a1a1a`), white (`#ffffff`), light gray (`#f5f5f5`). Secondary text: `#666`. Borders: `#e0e0e0`.
+- System fonts only. No external font loading.
 - Print-friendly. No elements that depend on color alone to convey meaning.
 
 ## HTML Template
 
-Use this exact template. Modify content sections only. **If a page does not use tldraw, remove the tldraw script tag and tldraw initialization block.**
+Use this exact template. Modify content sections only.
 
 ```html
 <!DOCTYPE html>
@@ -230,7 +211,7 @@ Use this exact template. Modify content sections only. **If a page does not use 
         }
         .callout strong { display: block; margin-bottom: 0.25rem; }
         .mermaid { margin: 1.5rem 0; text-align: center; }
-        .tldraw-diagram { width: 100%; height: 400px; margin: 1.5rem 0; border: 1px solid #e0e0e0; border-radius: 4px; position: relative; }
+        .diagram { width: 100%; height: auto; margin: 1.5rem 0; }
         ul, ol { margin-bottom: 1rem; padding-left: 1.5rem; }
         li { margin-bottom: 0.25rem; }
         footer {
@@ -243,7 +224,7 @@ Use this exact template. Modify content sections only. **If a page does not use 
         @media print {
             body { max-width: none; padding: 1rem; }
             h2 { break-after: avoid; }
-            pre, .mermaid, .comparison, .tldraw-diagram { break-inside: avoid; }
+            pre, .mermaid, .comparison, .diagram { break-inside: avoid; }
         }
     </style>
 </head>
@@ -260,8 +241,15 @@ Use this exact template. Modify content sections only. **If a page does not use 
         A[Component] --> B[Component]
     </div>
 
-    <!-- tldraw diagram -->
-    <div class="tldraw-diagram" id="architecture-overview"></div>
+    <!-- SVG diagram -->
+    <svg class="diagram" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1a1a"/>
+            </marker>
+        </defs>
+        <!-- shapes and arrows here -->
+    </svg>
 
     <h2>Key Concepts</h2>
     <table>
@@ -300,17 +288,6 @@ Use this exact template. Modify content sections only. **If a page does not use 
 
     <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
-
-    <!-- tldraw init: REMOVE this block if page has no tldraw diagrams -->
-    <script src="./tldraw-viewer.js"></script>
-    <script>
-        TldrawViewer.render('architecture-overview', {
-            store: {
-                // shape definitions here
-            }
-        });
-    </script>
-    <!-- /tldraw init -->
 </body>
 </html>
 ```
@@ -327,5 +304,5 @@ Examples: `elixir-pattern-matching.html`, `kubernetes-pods.html`, `event-sourcin
 - Keep JS developer perspective — include comparisons where relevant
 - Write for someone reading without conversation context
 - Every section should stand on its own
-- At least one diagram per page (mermaid or tldraw)
+- At least one diagram per page (mermaid or SVG)
 - Use both diagram types in a single page when it serves the content

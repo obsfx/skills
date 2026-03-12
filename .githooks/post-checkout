@@ -1,6 +1,0 @@
-#!/bin/bash
-# $3 is 1 for branch checkout, 0 for file checkout
-# Only rebuild on branch checkout
-if [ "$3" = "1" ]; then
-  exec "$(git rev-parse --show-toplevel)/scripts/ensure-viewer-build.sh"
-fi

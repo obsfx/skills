@@ -15,7 +15,7 @@
         "repo": "obsfx/skills"
       },
       "description": "Composable skills for coding agents. Includes assisted-learning for JS developers exploring new technologies, software-architect for design and review workflows, and page generation for printable HTML reference pages.",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "author": {
         "name": "Omercan Balandi"
       }
