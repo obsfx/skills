@@ -19,6 +19,16 @@ Or in Claude Code interactive mode:
 /plugin install obsfx-skills
 ```
 
+### Development Setup
+
+If you cloned the repo for development, enable git hooks so the tldraw viewer bundle stays up to date:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This runs `scripts/ensure-viewer-build.sh` on `post-merge` and `post-checkout`, which builds the viewer bundle if it's missing or stale.
+
 ### Verify Installation
 
 Start a new session and ask for something that should trigger a skill (for example, "help me plan this feature" or "teach me about Kubernetes"). The agent should automatically invoke the relevant skill.
