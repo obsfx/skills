@@ -1,33 +1,71 @@
-# Skills
+# obsfx-skills
 
-A collection of composable skills for coding agents, focused on structured workflows that make agents more deliberate and effective.
+A Claude Code plugin with composable skills for coding agents — structured workflows for learning, architecture, and planning.
 
 ## Installation
 
 ```bash
-npx skills add https://github.com/obsfx/skills --skill software-architect
-npx skills add https://github.com/obsfx/skills --skill assisted-learning
+# Add the marketplace
+claude plugin marketplace add obsfx/skills
+
+# Install the plugin
+claude plugin install obsfx-skills
 ```
 
-or
+Or in Claude Code interactive mode:
 
-```bash
-git clone https://github.com/obsfx/skills.git ~/.claude/skills/skills
+```
+/plugin marketplace add obsfx/skills
+/plugin install obsfx-skills
 ```
 
 ### Verify Installation
 
-Start a new session and ask for something that should trigger a skill (for example, "help me plan this feature" or "review the architecture"). The agent should automatically invoke the relevant skill.
+Start a new session and ask for something that should trigger a skill (for example, "help me plan this feature" or "teach me about Kubernetes"). The agent should automatically invoke the relevant skill.
 
-## What's Inside
+## Components
 
-### Architecture & Planning
+| Component | Type | Purpose |
+|-----------|------|---------|
+| `assisted-learning` | skill | Teach new technologies to JS developers through comparisons and diagrams |
+| `software-architect` | skill | Design, plan, and review software architecture |
+| `/obsfx-skills:page` | command | Generate a static HTML reference page from a learning session |
 
-- **software-architect** — Structured design workflow with two modes: Design (new features, structural changes) and Review (analyze existing codebase for pain points). Enforces multi-solution analysis from a tech lead perspective, composable module design, and architecture-first planning. Generates incremental plan files in `docs/<plan-name>/`. Only proposes changes that genuinely matter.
+## Skills
 
-### Learning & Knowledge
+Skills are auto-activated by the agent when the conversation matches their description. You don't invoke them manually — they load as context when relevant.
 
-- **assisted-learning** — Assisted learning skill for JavaScript developers exploring new technologies. Teaches new programming languages (Elixir, Swift, Go, Rust), tools (Kubernetes, Docker, Terraform), and architectural approaches (microservices, CQRS, distributed systems) through side-by-side JS comparisons, ASCII diagrams, and real-world examples. Uses trekker as a persistent learning database across sessions. Always researches via context7 and web search before teaching. Recommends industry-standard approaches from a tech lead perspective.
+### assisted-learning
+
+Teaches new programming languages (Elixir, Swift, Go, Rust), tools (Kubernetes, Docker, Terraform), and architectural approaches (microservices, CQRS, distributed systems) to JavaScript developers. Every concept is mapped to a JS mental model with side-by-side comparisons.
+
+- Researches via context7 and web search before teaching
+- Uses trekker as a persistent learning database across sessions
+- Recommends industry-standard approaches from a tech lead perspective
+
+### software-architect
+
+Structured design workflow with two modes:
+
+- **Design** — new features, structural changes. Enforces multi-solution analysis, composable module design, and architecture-first planning.
+- **Review** — analyze existing codebase for pain points and improvement opportunities.
+
+Generates incremental plan files in `docs/<plan-name>/`.
+
+## Commands
+
+### `/obsfx-skills:page [topic-slug]`
+
+Generates a clean, printable static HTML page that explains a concept from the current assisted-learning session. Writes to `docs/pages/<topic-slug>.html` in your project root.
+
+- Uses mermaid for flowcharts, sequences, and state diagrams
+- Uses tldraw for rich spatial diagrams (architecture overviews, concept maps)
+- Minimal design: three colors, system fonts, no gradients — prints cleanly on paper
+
+```
+/obsfx-skills:page elixir-pattern-matching
+/obsfx-skills:page kubernetes-pods
+```
 
 ## License
 
