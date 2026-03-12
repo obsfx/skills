@@ -16,7 +16,13 @@ Create a clean, printable static HTML page that explains and demonstrates a conc
 
 3. Create the `docs/pages/` directory in the **user's project root** (the current working directory) if it doesn't exist. Write the HTML file to `docs/pages/<topic-slug>.html` in the project root. NEVER write to the plugin installation directory.
 
-4. Report the file path when done.
+4. If the page uses tldraw diagrams, copy the viewer bundle from the plugin to the project:
+   ```bash
+   cp "$CLAUDE_PLUGIN_ROOT/scripts/tldraw-viewer.js" docs/pages/tldraw-viewer.js
+   ```
+   Skip this step if `docs/pages/tldraw-viewer.js` already exists.
+
+5. Report the file path when done.
 
 ## Section Order
 
@@ -48,7 +54,7 @@ Wrap in `<div class="mermaid">...</div>`. One diagram per concept.
 
 ## tldraw Diagrams
 
-tldraw renders interactive readonly canvases from JSON snapshots. Use for diagrams where spatial layout, custom sizing, and freeform connections matter.
+tldraw renders interactive readonly canvases from JSON snapshots via a pre-bundled viewer (`tldraw-viewer.js`). Use for diagrams where spatial layout, custom sizing, and freeform connections matter.
 
 ### Container
 
@@ -56,9 +62,24 @@ tldraw renders interactive readonly canvases from JSON snapshots. Use for diagra
 <div class="tldraw-diagram" id="unique-diagram-name"></div>
 ```
 
+### Initialization
+
+The viewer exposes `TldrawViewer.render(containerId, snapshot)`. Call it after the DOM is ready:
+
+```html
+<script src="./tldraw-viewer.js"></script>
+<script>
+    TldrawViewer.render('architecture-overview', {
+        store: {
+            // shape definitions
+        }
+    });
+</script>
+```
+
 ### Snapshot Format
 
-Define each diagram in the `TLDRAW_SNAPSHOTS` object in the initialization script. Each snapshot has a `store` object containing shape records.
+Each snapshot has a `store` object containing shape records.
 
 **Shape types:**
 - `geo` — rectangles, ellipses, diamonds. Set shape via `props.geo`.
@@ -82,7 +103,7 @@ Define each diagram in the `TLDRAW_SNAPSHOTS` object in the initialization scrip
 ### Example snapshot
 
 ```javascript
-'data-flow': {
+TldrawViewer.render('data-flow', {
     store: {
         'shape:client': {
             typeName: 'shape', id: 'shape:client', type: 'geo',
@@ -118,7 +139,7 @@ Define each diagram in the `TLDRAW_SNAPSHOTS` object in the initialization scrip
             }
         }
     }
-}
+});
 ```
 
 ### tldraw style constraints
@@ -140,7 +161,7 @@ Keep tldraw diagrams consistent with the page's minimal aesthetic:
 
 ## HTML Template
 
-Use this exact template. Modify content sections only. **If a page does not use tldraw, remove the importmap, the tldraw CSS link, and the tldraw initialization script block.**
+Use this exact template. Modify content sections only. **If a page does not use tldraw, remove the tldraw script tag and tldraw initialization block.**
 
 ```html
 <!DOCTYPE html>
@@ -149,18 +170,6 @@ Use this exact template. Modify content sections only. **If a page does not use 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOPIC — Assisted Learning</title>
-    <!-- tldraw deps: REMOVE this block if page has no tldraw diagrams -->
-    <script type="importmap">
-    { "imports": {
-        "react": "https://esm.sh/react@18",
-        "react/": "https://esm.sh/react@18/",
-        "react-dom": "https://esm.sh/react-dom@18",
-        "react-dom/": "https://esm.sh/react-dom@18/",
-        "tldraw": "https://esm.sh/*tldraw?external=react,react-dom"
-    }}
-    </script>
-    <link rel="stylesheet" href="https://esm.sh/tldraw/tldraw.css" />
-    <!-- /tldraw deps -->
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -293,33 +302,13 @@ Use this exact template. Modify content sections only. **If a page does not use 
     <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
 
     <!-- tldraw init: REMOVE this block if page has no tldraw diagrams -->
-    <script type="module">
-    import React from 'react';
-    import { createRoot } from 'react-dom/client';
-    import { Tldraw } from 'tldraw';
-
-    const TLDRAW_SNAPSHOTS = {
-        'architecture-overview': {
+    <script src="./tldraw-viewer.js"></script>
+    <script>
+        TldrawViewer.render('architecture-overview', {
             store: {
                 // shape definitions here
             }
-        }
-    };
-
-    for (const [id, snapshot] of Object.entries(TLDRAW_SNAPSHOTS)) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        createRoot(el).render(
-            React.createElement(Tldraw, {
-                snapshot,
-                hideUi: true,
-                onMount: (editor) => {
-                    editor.updateInstanceState({ isReadonly: true });
-                    editor.zoomToFit();
-                }
-            })
-        );
-    }
+        });
     </script>
     <!-- /tldraw init -->
 </body>

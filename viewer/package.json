@@ -1,0 +1,18 @@
+{
+  "name": "tldraw-viewer",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "vite build"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tldraw": "^3.9.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.0",
+    "vite-plugin-css-injected-by-js": "^3.5.2"
+  }
+}

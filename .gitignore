@@ -4,3 +4,4 @@
 .DS_Store
 .trekker/
 dist/
+viewer/node_modules/
