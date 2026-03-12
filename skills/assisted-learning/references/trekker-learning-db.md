@@ -18,16 +18,16 @@ Trekker doubles as a persistent learning database across sessions. Structure:
 - **Comments** = Learning notes, insights, gotchas, reference links
 - **Tags** = Cross-topic categorization (e.g., "concurrency", "async", "deployment")
 
-```mermaid
-flowchart TD
-    A[Epic: Learning Elixir] --> B[Task: Pattern Matching]
-    A --> C[Task: GenServer]
-    A --> D[Task: OTP Supervision]
-    B --> E[Subtask: Guard clauses]
-    B --> F[Comment: JS equivalent is switch + destructuring]
-    C --> G[Comment: Like a stateful EventEmitter]
-    D --> H[Comment: No JS equivalent - new concept]
-    D --> I[Subtask: Supervision strategies]
+```
+Epic: Learning Elixir
+ ├── Task: Pattern Matching
+ │    ├── Subtask: Guard clauses
+ │    └── Comment: JS equivalent is switch + destructuring
+ ├── Task: GenServer
+ │    └── Comment: Like a stateful EventEmitter
+ └── Task: OTP Supervision
+      ├── Comment: No JS equivalent - new concept
+      └── Subtask: Supervision strategies
 ```
 
 ## Structure

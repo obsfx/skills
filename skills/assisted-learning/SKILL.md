@@ -17,7 +17,7 @@ description: >
 
 # Assisted Learning
 
-Teach new technologies to JavaScript developers through side-by-side comparisons, mermaid diagrams, real-world examples, and industry-standard recommendations. Store learning progress in trekker for cross-session continuity.
+Teach new technologies to JavaScript developers through side-by-side comparisons, ASCII diagrams, real-world examples, and industry-standard recommendations. Store learning progress in trekker for cross-session continuity.
 
 **Target audience:** JavaScript/TypeScript developers.
 **Output:** Explanations, comparisons, diagrams, insights. NOT code generation or scaffolding.
@@ -26,22 +26,43 @@ Teach new technologies to JavaScript developers through side-by-side comparisons
 
 ## Workflow
 
-```mermaid
-flowchart TD
-    A[User asks about a topic] --> B[Classify topic type]
-    B --> C{Type?}
-    C -->|Language| D[Load language-learning ref]
-    C -->|Tool| E[Load tool-learning ref]
-    C -->|Approach| F[Load approach-learning ref]
-    D --> G[Research via context7 + web search]
-    E --> G
-    F --> G
-    G --> H[Map to JS mental models]
-    H --> I[Build side-by-side comparison]
-    I --> J[Create mermaid diagrams]
-    J --> K[Identify recommended approach]
-    K --> L[Present with insights]
-    L --> M[Store in trekker]
+```
+User asks about a topic
+        |
+        v
+  Classify topic type
+        |
+        v
+    ┌───┴───────────────┐
+    |    Type?           |
+    └───┬───────┬───────┘
+        |       |       |
+   Language   Tool   Approach
+        |       |       |
+        v       v       v
+  Load ref   Load ref  Load ref
+        |       |       |
+        └───┬───┘───────┘
+            v
+  Research via context7 + web search
+            |
+            v
+    Map to JS mental models
+            |
+            v
+  Build side-by-side comparison
+            |
+            v
+    Create ASCII diagrams
+            |
+            v
+  Identify recommended approach
+            |
+            v
+    Present with insights
+            |
+            v
+     Store in trekker
 ```
 
 ## Topic Classification
@@ -72,12 +93,13 @@ If prior learning exists, resume from where they left off. Do NOT re-explain und
 
 Do NOT rely solely on trained knowledge. Always verify with live sources.
 
-```mermaid
-flowchart LR
-    A[context7: resolve-library-id] --> B[context7: query-docs]
-    C[WebSearch: current best practices] --> D[Synthesize findings]
-    B --> D
-    D --> E[Present with citations]
+```
+context7: resolve-library-id --> context7: query-docs ──┐
+                                                        v
+WebSearch: current best practices ───────> Synthesize findings
+                                                        |
+                                                        v
+                                              Present with citations
 ```
 
 - **context7** — `resolve-library-id` then `query-docs` for official documentation, API references, code examples
@@ -106,17 +128,17 @@ Follow the comparison template from the loaded reference file.
 4. Gotcha (common mistake JS devs make)
 5. Industry standard (which way passes code review)
 
-### Step 5: Mermaid Diagrams
+### Step 5: ASCII Diagrams
 
-Include at least one mermaid diagram per major concept:
+Include at least one ASCII diagram per major concept:
 
-| Context | Diagram Type | Use For |
-|---------|-------------|---------|
-| Architecture | `flowchart` | System structure, data flow |
-| Lifecycle | `sequenceDiagram` | Request/response, event flow |
-| Decision | `flowchart` with diamonds | When to use X vs Y |
-| Comparison | `flowchart` with subgraphs | Before/after, JS vs target |
-| State | `stateDiagram-v2` | State machines, lifecycle |
+| Context | Diagram Style | Use For |
+|---------|--------------|---------|
+| Architecture | Box-and-arrow flow | System structure, data flow |
+| Lifecycle | Vertical sequence | Request/response, event flow |
+| Decision | Diamond branching | When to use X vs Y |
+| Comparison | Side-by-side columns | Before/after, JS vs target |
+| State | State transition arrows | State machines, lifecycle |
 
 ### Step 6: Recommend with Reasoning
 
@@ -132,15 +154,27 @@ When multiple solutions exist:
 
 See [trekker-learning-db.md](references/trekker-learning-db.md) for full patterns.
 
-```mermaid
-flowchart TD
-    A[Concept explained] --> B{Epic exists?}
-    B -->|No| C[Create epic: Learning Topic]
-    B -->|Yes| D[Use existing epic]
-    C --> E[Create task for concept]
-    D --> E
-    E --> F[Add comments: insights + gotchas]
-    F --> G[Set status: completed]
+```
+Concept explained
+       |
+       v
+  Epic exists?
+  /          \
+ No          Yes
+ |            |
+ v            v
+Create      Use existing
+epic        epic
+ |            |
+ └─────┬──────┘
+       v
+Create task for concept
+       |
+       v
+Add comments: insights + gotchas
+       |
+       v
+Set status: completed
 ```
 
 After teaching a concept:

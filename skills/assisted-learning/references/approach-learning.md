@@ -10,21 +10,45 @@
 
 ## Teaching Flow
 
-```mermaid
-flowchart TD
-    A[Identify approach/paradigm] --> B[What problem does it solve?]
-    B --> C[Has the JS dev encountered this problem?]
-    C --> D{Problem is familiar?}
-    D -->|Yes| E[Show how they solved it in JS]
-    D -->|No| F[Explain the problem first]
-    E --> G[Show how the approach solves it better]
-    F --> G
-    G --> H[Core principles and patterns]
-    H --> I[Architecture diagram]
-    I --> J[Real-world example with JS context]
-    J --> K[When to use vs when NOT to use]
-    K --> L[Industry standard implementation]
-    L --> M[Store learning in trekker]
+```
+Identify approach/paradigm
+          |
+          v
+What problem does it solve?
+          |
+          v
+Has the JS dev encountered this problem?
+          |
+          v
+   Problem is familiar?
+   /                \
+  Yes                No
+  |                  |
+  v                  v
+Show how they      Explain the
+solved it in JS    problem first
+  |                  |
+  └────────┬─────────┘
+           v
+Show how the approach solves it better
+           |
+           v
+Core principles and patterns
+           |
+           v
+    Architecture diagram
+           |
+           v
+Real-world example with JS context
+           |
+           v
+When to use vs when NOT to use
+           |
+           v
+Industry standard implementation
+           |
+           v
+   Store learning in trekker
 ```
 
 ## Approach Explanation Template
@@ -39,8 +63,8 @@ flowchart TD
 
 ### Core Principles
 
-\`\`\`mermaid
-[Diagram showing the approach's architecture]
+\`\`\`
+[ASCII diagram showing the approach's architecture]
 \`\`\`
 
 | Principle | Explanation | JS Analogy |
@@ -89,46 +113,53 @@ Map learning priority based on career growth:
 ### Pattern: Before/After
 Show the JS dev's current approach vs the new approach:
 
-```mermaid
-flowchart LR
-    subgraph "Before (JS Monolith)"
-        A[Express App] --> B[All routes]
-        B --> C[Single DB]
-    end
-    subgraph "After (Approach Applied)"
-        D[Service A] --> G[DB A]
-        E[Service B] --> H[DB B]
-        D ---|Message Bus| E
-    end
+```
+  Before (JS Monolith)          After (Approach Applied)
+ ┌────────────────────┐        ┌─────────────────────────┐
+ │ Express App        │        │ Service A ──> DB A      │
+ │   |                │        │    |                    │
+ │   v                │        │    | Message Bus        │
+ │ All routes         │        │    |                    │
+ │   |                │        │ Service B ──> DB B      │
+ │   v                │        └─────────────────────────┘
+ │ Single DB          │
+ └────────────────────┘
 ```
 
 ### Pattern: Decision Tree
 Help decide when to apply an approach:
 
-```mermaid
-flowchart TD
-    A[Need this approach?] --> B{Large team?}
-    B -->|Yes| C{Independent deployment needed?}
-    B -->|No| D[Probably not yet]
-    C -->|Yes| E[Yes, apply it]
-    C -->|No| F[Consider modular monolith first]
+```
+Need this approach?
+        |
+        v
+   Large team?
+   /         \
+  Yes         No
+  |            |
+  v            v
+Independent   Probably
+deployment    not yet
+needed?
+  /      \
+ Yes      No
+ |         |
+ v         v
+Yes,     Consider modular
+apply it monolith first
 ```
 
 ### Pattern: Component Interaction
 Show how pieces communicate in the approach:
 
-```mermaid
-sequenceDiagram
-    participant Client
-    participant API Gateway
-    participant Service A
-    participant Service B
-    participant Message Queue
-
-    Client->>API Gateway: Request
-    API Gateway->>Service A: Route
-    Service A->>Message Queue: Publish event
-    Message Queue->>Service B: Consume event
-    Service B-->>Service A: Async response
-    Service A-->>Client: Response
+```
+Client        API Gateway     Service A      Service B     Message Queue
+  |               |               |              |              |
+  |── Request ──> |               |              |              |
+  |               |── Route ────> |              |              |
+  |               |               |── Publish ──────────────> |
+  |               |               |              | <── Consume ─|
+  |               |               | <── Async ── |              |
+  | <──────────── Response ────── |              |              |
+  |               |               |              |              |
 ```

@@ -10,20 +10,43 @@
 
 ## Teaching Flow
 
-```mermaid
-flowchart TD
-    A[Identify target tool] --> B[Why does this tool exist?]
-    B --> C[What JS-ecosystem equivalent exists?]
-    C --> D{Has JS equivalent?}
-    D -->|Yes| E[Compare: Docker vs npm scripts]
-    D -->|No| F[Explain problem it solves from scratch]
-    E --> G[Core concepts and terminology]
-    F --> G
-    G --> H[Architecture / How it works]
-    H --> I[Essential commands and workflows]
-    I --> J[Real-world use case with Node.js/JS app]
-    J --> K[Common mistakes and best practices]
-    K --> L[Store learning in trekker]
+```
+Identify target tool
+        |
+        v
+Why does this tool exist?
+        |
+        v
+What JS-ecosystem equivalent exists?
+        |
+        v
+   Has JS equivalent?
+   /              \
+  Yes              No
+  |                |
+  v                v
+Compare:        Explain problem
+Docker vs       it solves
+npm scripts     from scratch
+  |                |
+  └──────┬─────────┘
+         v
+Core concepts and terminology
+         |
+         v
+Architecture / How it works
+         |
+         v
+Essential commands and workflows
+         |
+         v
+Real-world use case with Node.js/JS app
+         |
+         v
+Common mistakes and best practices
+         |
+         v
+Store learning in trekker
 ```
 
 ## Tool Exploration Template
@@ -38,8 +61,8 @@ flowchart TD
 
 ### Architecture
 
-\`\`\`mermaid
-[Diagram showing how the tool works internally]
+\`\`\`
+[ASCII diagram showing how the tool works internally]
 \`\`\`
 
 ### Core Concepts
@@ -104,21 +127,20 @@ When the tool has alternatives, compare them:
 ```
 
 ### Pattern: Architecture Diagram
-Always include a mermaid diagram showing how the tool fits into the JS developer's existing workflow:
+Always include an ASCII diagram showing how the tool fits into the JS developer's existing workflow:
 
-```mermaid
-flowchart LR
-    subgraph "What you know"
-        A[Node.js App]
-        B[npm/pnpm]
-        C[package.json]
-    end
-    subgraph "New tool layer"
-        D[Tool Config]
-        E[Tool Runtime]
-    end
-    A --> D
-    B --> D
-    D --> E
-    E --> F[Production]
+```
+  What you know          New tool layer
+ ┌──────────────┐      ┌──────────────┐
+ │ Node.js App  │─────>│ Tool Config  │
+ │ npm/pnpm     │─────>│              │
+ │ package.json │      └──────┬───────┘
+ └──────────────┘             |
+                              v
+                       ┌──────────────┐
+                       │ Tool Runtime │
+                       └──────┬───────┘
+                              |
+                              v
+                        [Production]
 ```

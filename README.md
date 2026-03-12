@@ -27,7 +27,7 @@ Start a new session and ask for something that should trigger a skill (for examp
 
 ### Learning & Knowledge
 
-- **assisted-learning** — Assisted learning skill for JavaScript developers exploring new technologies. Teaches new programming languages (Elixir, Swift, Go, Rust), tools (Kubernetes, Docker, Terraform), and architectural approaches (microservices, CQRS, distributed systems) through side-by-side JS comparisons, mermaid diagrams, and real-world examples. Uses trekker as a persistent learning database across sessions. Always researches via context7 and web search before teaching. Recommends industry-standard approaches from a tech lead perspective.
+- **assisted-learning** — Assisted learning skill for JavaScript developers exploring new technologies. Teaches new programming languages (Elixir, Swift, Go, Rust), tools (Kubernetes, Docker, Terraform), and architectural approaches (microservices, CQRS, distributed systems) through side-by-side JS comparisons, ASCII diagrams, and real-world examples. Uses trekker as a persistent learning database across sessions. Always researches via context7 and web search before teaching. Recommends industry-standard approaches from a tech lead perspective.
 
 ## License
 

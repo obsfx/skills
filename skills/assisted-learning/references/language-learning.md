@@ -11,18 +11,36 @@
 
 ## Teaching Flow
 
-```mermaid
-flowchart TD
-    A[Identify target language] --> B[Map JS equivalent concepts]
-    B --> C[Find closest mental model]
-    C --> D{Concept has JS equivalent?}
-    D -->|Yes| E[Side-by-side comparison]
-    D -->|No| F[Explain from first principles]
-    E --> G[Show idiomatic target code]
-    F --> G
-    G --> H[Highlight gotchas and pitfalls]
-    H --> I[Provide real-world use case]
-    I --> J[Store learning in trekker]
+```
+Identify target language
+          |
+          v
+Map JS equivalent concepts
+          |
+          v
+Find closest mental model
+          |
+          v
+  Concept has JS equivalent?
+  /                       \
+ Yes                       No
+ |                         |
+ v                         v
+Side-by-side           Explain from
+comparison             first principles
+ |                         |
+ └───────────┬─────────────┘
+             v
+  Show idiomatic target code
+             |
+             v
+Highlight gotchas and pitfalls
+             |
+             v
+  Provide real-world use case
+             |
+             v
+   Store learning in trekker
 ```
 
 ## Comparison Template
