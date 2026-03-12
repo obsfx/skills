@@ -1,5 +1,6 @@
 {
   "name": "obsfx-skills",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Composable skills for coding agents — structured workflows for learning, architecture, and planning"
 }
+

@@ -153,8 +153,10 @@ Use this exact template. Modify content sections only. **If a page does not use 
     <script type="importmap">
     { "imports": {
         "react": "https://esm.sh/react@18",
-        "react-dom/client": "https://esm.sh/react-dom@18/client",
-        "tldraw": "https://esm.sh/tldraw"
+        "react/": "https://esm.sh/react@18/",
+        "react-dom": "https://esm.sh/react-dom@18",
+        "react-dom/": "https://esm.sh/react-dom@18/",
+        "tldraw": "https://esm.sh/*tldraw?external=react,react-dom"
     }}
     </script>
     <link rel="stylesheet" href="https://esm.sh/tldraw/tldraw.css" />
